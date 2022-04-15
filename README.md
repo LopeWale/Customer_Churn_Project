@@ -29,7 +29,7 @@ Overview of the files and data present in the root directory.
     <li>README.md</li></ol>
 <p>The file structure of a completed project should be similar to the below:</p>
     
-![Project Files Structure!](./images/clean-code-churn-files.png "Project files structure"){width=30%,height:30px}
+![Project Files Structure](./images/clean-code-churn-files.png "Project files structure")
 
 <h3> Save Images & Models</h3>
 
@@ -52,9 +52,9 @@ How do you run your files? What should happen when you run your files?
 Requirement.txt
 </h3>
 <p>**For python 3.8<br>
-    Run<code>reuirements_py3.8.txt</code></p>
+    Run<code>requirements_py3.8.txt</code></p>
 <p>**For python 3.6<br>
-    Run<code>reuirements_py3.6.txt</code></p>
+    Run<code>requirements_py3.6.txt</code></p>
 <h3> File for find customers who are likely to Churn</h3>
 <code>churn_library.py</code>
 <p>The churn_library.py is a library of functions to find customers who are likely to churn. You may be able to complete this project by completing each of these functions, but you also have the flexibility to change or add functions to meet the rubric criteria.</p>
