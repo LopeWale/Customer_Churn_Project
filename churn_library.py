@@ -26,31 +26,40 @@ os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 
 class Visual:
     '''
-    Visual class perform eda, classification report and csv,
-    the feature importances figure on df,
-    and save figures to images folder --all data visuals
-    input:
-        df: pandas dataframe
-    output:
-        None
+    This is a class to visualize the data by performing EDA,
+    classification report, and creating correlation matrix
+
+    Parameters
+    ----------
+    df: pandas dataframe
+        pandas dataframe to be visualized
+    y_train: pandas series
+        y_train to be used for classification report
+    y_test: pandas series
+        y_test to be used for classification report
+    y_train_preds_rf: pandas series
+        y_train_preds for random forest
+    y_train_preds_lr: pandas series
+        y_train_preds for logistic regression
+    y_test_preds_lr: pandas series
+        y_test
     '''
 
     def __init__(self):
         """
-        initialization
-        self.output_pth:
-            path to store the feature_importance plots/figures
+        Initialize the instance.
         """
-
     # plot all columns in the Quant_cols anmd Categorical_Cols list from the
     # dataframe (df)
     def perform_eda(self, df):
         """
-        perform eda on df and save figures to images folder
-        input:
-            dataframe: pandas dataframe
-        output:
-            None
+        This function performs exploratory data analysis on the given dataframe.
+        Parameters
+        ----------
+        df: a pandas dataframe object
+        Returns
+        -------
+        None.
         """
         quant_columns = df.select_dtypes(include="number")
         cat_columns = df.select_dtypes(exclude="number")
@@ -85,19 +94,31 @@ class Visual:
                                     y_train_preds_rf,
                                     y_test_preds_lr,
                                     y_test_preds_rf):
-        '''
-        produces classification report for training and testing results and stores report as image
-        in images folder
-        input:
-            y_train: training response values
-            y_test:  test response values
-            y_train_preds_lr: training predictions from logistic regression
-            y_train_preds_rf: training predictions from random forest
-            y_test_preds_lr: test predictions from logistic regression
-            y_test_preds_rf: test predictions from random forest
-        output:
-            None
-        '''
+        """
+        Parameters
+        ----------
+        y_train : pd.Series
+            The training labels
+        y_test : pd.Series
+            The test labels
+        y_train_preds_lr : pd.Series
+            The training set predictions using Logistic Regression
+        y_train_preds_rf : pd.Series
+            The training set predictions using Random Forest
+        y_test_preds_lr : pd.Series
+            The test set predictions using Logistic Regression
+        cls_report : dict
+            A dictionary of classification report titles as keys and classification 
+            report data as values
+
+        Returns
+        -------
+        None
+
+        Notes
+        -----
+        To be used for analyzing the classification of the models' parameters passed
+        """
         cls_report = {
             "Random Forest": (
                 "Random Forest Train",
@@ -127,21 +148,24 @@ class Visual:
             plt.savefig("images/results/%s_report.png"%title)
             plt.close(fig)
 def feature_importance_plot(model,x_train, output_pth):
-    '''
-    creates and stores the feature importances in pth
-    input:
-        self.model: model object containing feature_importances_
-        X_data: pandas dataframe of X values
-        self.output_pth: path to store the figure
-    output:
-        None
-    '''
-    # compute feature importances
-    # Sort feature importances in descending order
-    # Rearrange feature names so they match the sorted feature importances
-    # plot feature importances
-    # Add feature names as x-axis labels
-    # store importance values in a csv
+    """
+    feature_importance_plot(model,x_train, output_pth)
+    This function is used in order to plot the feature 
+    importance of a given model.
+    
+    Parameters
+    ----------
+    model : 
+        A trained model.
+    x_train : 
+        Training data's feature set.
+    output_pth :
+        Path to save the plot.
+    
+    Returns
+    -------
+    None.
+    """
     importances = model.feature_importances_
     indices = np.argsort(importances)[::-1]
     names = [x_train.columns[i] for i in indices]
@@ -157,15 +181,30 @@ def feature_importance_plot(model,x_train, output_pth):
                                columns=['Names', 'Feature_Importance'])
     feature_csv.sort_values(by=['Feature_Importance'], ascending=False)
     feature_csv.to_csv("./data/feature_importance_values",
-                       float_format='%.4f')  # rounded to two decimals
+                       float_format='%.4f')  # rounded to four decimals
 
 
 class Model:
     """
-    Model class for the following functions
-    import_dataset: loads the data
-    encoder_helper: one_hot_encoder for categorical columns
-    perform_feature_engineering: standardization of x_train to reduce model overfitting
+    This class performs a simple classification task.
+    
+    Parameters
+    ----------
+    dataset : matrix-like, shape (n_samples, n_features)
+        Training data.
+    model: str
+        The model to be trained.
+
+    Attributes
+    ----------
+    x_train : array-like, shape = [n_samples, n_features]
+        Training set.
+
+    x_test : array-like, shape = [n_samples, n_features]
+        Cross-validation set.
+
+    y_train : array-like, shape = [n_samples]
+        Training labels
     """
 
     def __init__(self):
@@ -179,13 +218,10 @@ class Model:
         self.dataset = None
 
     def import_dataset(self, pth):
-        '''
-        returns dataframe for the csv found at pth
-        input:
-            pth: a path to the csv
-        output:
-            df: pandas dataframe
-        '''
+        """
+        This function takes in a .csv file path and Registers
+        the dataset in a variable called dataset.
+        """
         data = pd.read_csv(pth)
         # Flag churn customer
         data['Churn'] = data['Attrition_Flag'].apply(
@@ -196,15 +232,19 @@ class Model:
         return self.dataset
 
     def encoder_helper(self, category_lst):
-        '''
-        helper function to turn each categorical column into a new column with
-        propotion of churn for each category
-        input:
-            df: pandas dataframe
-            category_lst: list of columns that contain categorical features
-        output:
-            df: pandas dataframe with new columns for
-        '''
+        """
+        This function will take in a dataframe and a list of categorical variables.
+        It will then create a new column for each variable in the list, appending
+        the string "_Churn" to the original name. The value of each new column
+        will be the mean rate of Churn for the respective category.
+
+        Args:
+            df (pd.DataFrame): the dataframe to be used
+            category_lst (list): a list of categorical variables
+
+        Returns:
+            pd.DataFrame: a new dataframe with the new columns
+        """
         # create a variable for the categorical columns
         dataframe = self.dataset.copy()
         for cat_name in category_lst:
@@ -217,17 +257,19 @@ class Model:
         return self.dataset
 
     def perform_feature_engineering(self, response):
-        '''
-        input:
-            df: pandas dataframe
-        response: string of response name [optional argument that could be used for naming variables
-        or index y column]
-        output:
-            X_train: X training data
-            X_test: X testing data
-            y_train: y training data
-            y_test: y testing data
-        '''
+        """
+        Description:
+            Perform feature engineering on the dataset, including scaling and train/test split.
+
+        Args:
+            response: The feature to be predicted.
+
+        Returns:
+            self.x_train: The feature engineering dataset for training.
+            self.x_test: The feature engineering dataset for testing.
+            self.y_train: The response variable for training.
+            self.y_test: The response variable for testing.
+        """
         copy_df = self.dataset.copy()
         x_data = copy_df[response]
         y_data = copy_df["Churn"]
@@ -241,16 +283,15 @@ class Model:
         return self.x_train, self.x_test, self.y_train, self.y_test
 
     def training_models(self):
-        '''
-        train, store model results: images + scores, and store models
-        input:
-              X_train: X training data
-              X_test: X testing data
-              y_train: y training data
-              y_test: y testing data
-        output:
-              None
-        '''
+        """
+        This function runs the training models, grid search and saves the models results.
+        
+        Parameters:
+        self: the instance of the class.
+
+        Returns: 
+        Saves the best model to a pickle file for later loading and prediction
+        """
         rfc = RandomForestClassifier(random_state=42)
         lrc = LogisticRegression(solver='lbfgs', max_iter=3000)
         # set parameters for tuning
