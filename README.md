@@ -14,9 +14,7 @@
 
 <h2>**Project Description</h2>
 
-<p>In this project, you will implement your learnings to identify credit card customers that are most likely to churn. The completed project will include a Python package for a machine learning project that follows coding (PEP8) and engineering best practices for implementing software (modular, documented, and tested). The package will also have the flexibility of being run interactively or from the command-line interface (CLI).</p>
-
-<p>This project will give you practice using your skills for testing, logging, and best coding practices from this lesson. It will also introduce you to a problem data scientists across companies face all the time. How do we identify (and later intervene with) customers who are likely to churn?</p>
+<p>Build a package for a machine learning project that deploys a prediction of which customers are most likely to churn. The package will include a command-line interface (CLI) for interacting with the data and training the machine learning model. The package will also include a script for testing the machine learning model. This script will load the customer dataset, train the machine learning model, and then make predictions on which customers are most likely to churn. The script will also log the events during each unit test. It should give insights into how do we identify (and later intervene with) customers who are likely to churn.</p>
 
 <p>Below are the first few rows associated with the dataset for this project, which was pulled from Kaggle.</p> 
 
